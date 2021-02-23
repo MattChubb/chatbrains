@@ -7,8 +7,8 @@ import (
     "math"
     "regexp"
 	"strings"
-    common "github.com/MattChubb/telegram-bot-go/brain"
-    markov "github.com/MattChubb/telegram-bot-go/brain/markov"
+    brain "github.com/MattChubb/chatbrains/brain"
+    markov "github.com/MattChubb/chatbrains/markov"
 )
 
 //TODO Use a bi-directional markov chain instead of 2 separate chains to lower memory footprint
@@ -62,7 +62,7 @@ func (brain *Brain) Train(data string) error {
     log.Debug("Braindump: ", brain)
     log.Debug("Training data: ", data)
 
-    processedData := common.ProcessString(data)
+    processedData := brain.ProcessString(data)
     log.Debug("Processed into: ", processedData)
 
     brain.fwdChain.Add(processedData)
@@ -73,10 +73,10 @@ func (brain *Brain) Train(data string) error {
 }
 
 func (brain *Brain) Generate(prompt string) (string, error) {
-    processedPrompt := common.ProcessString(prompt)
+    processedPrompt := brain.ProcessString(prompt)
 	subject := []string{}
 	if len(processedPrompt) > 0 {
-		subject = common.ExtractSubject(processedPrompt, brain.fwdChain.Order)
+		subject = brain.ExtractSubject(processedPrompt, brain.fwdChain.Order)
 	}
 	//TODO Any other clever Markov hacks?
 	sentence := brain.generateSentence(brain.bckChain, subject)

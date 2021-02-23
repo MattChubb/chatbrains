@@ -7,7 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
     "regexp"
 	"strings"
-    brain "github.com/MattChubb/chatbrains/brain"
+    chatbrains "github.com/MattChubb/chatbrains"
 )
 
 type Brain struct {
@@ -54,7 +54,7 @@ func (brain *Brain) Init(order int, lengthLimit int) {
 func (brain *Brain) Train(data string) error {
     log.Debug("Braindump: ", brain)
     log.Debug("Training data: ", data)
-    processedData := brain.ProcessString(data)
+    processedData := chatbrains.ProcessString(data)
     log.Debug("Processed into: ", processedData)
     brain.chain.Add(processedData)
     return nil
@@ -62,12 +62,12 @@ func (brain *Brain) Train(data string) error {
 
 func (brain *Brain) Generate(prompt string) (string, error) {
     log.Debug("Input: ", prompt)
-    processedPrompt := brain.ProcessString(prompt)
+    processedPrompt := chatbrains.ProcessString(prompt)
     log.Debug("Processed into: ", processedPrompt)
 
 	subject := []string{}
 	if len(processedPrompt) > 0 {
-		subject = brain.ExtractSubject(processedPrompt, brain.chain.Order)
+		subject = chatbrains.ExtractSubject(processedPrompt, brain.chain.Order)
 	}
 	//TODO Any other clever Markov hacks?
 	sentence := brain.generateSentence(subject)

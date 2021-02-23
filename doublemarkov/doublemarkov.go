@@ -7,7 +7,7 @@ import (
     "math"
     "regexp"
 	"strings"
-    brain "github.com/MattChubb/chatbrains/brain"
+    chatbrains "github.com/MattChubb/chatbrains"
     markov "github.com/MattChubb/chatbrains/markov"
 )
 
@@ -62,7 +62,7 @@ func (brain *Brain) Train(data string) error {
     log.Debug("Braindump: ", brain)
     log.Debug("Training data: ", data)
 
-    processedData := brain.ProcessString(data)
+    processedData := chatbrains.ProcessString(data)
     log.Debug("Processed into: ", processedData)
 
     brain.fwdChain.Add(processedData)
@@ -73,10 +73,10 @@ func (brain *Brain) Train(data string) error {
 }
 
 func (brain *Brain) Generate(prompt string) (string, error) {
-    processedPrompt := brain.ProcessString(prompt)
+    processedPrompt := chatbrains.ProcessString(prompt)
 	subject := []string{}
 	if len(processedPrompt) > 0 {
-		subject = brain.ExtractSubject(processedPrompt, brain.fwdChain.Order)
+		subject = chatbrains.ExtractSubject(processedPrompt, brain.fwdChain.Order)
 	}
 	//TODO Any other clever Markov hacks?
 	sentence := brain.generateSentence(brain.bckChain, subject)
